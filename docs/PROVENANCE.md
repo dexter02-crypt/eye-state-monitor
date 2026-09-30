@@ -1,8 +1,6 @@
 # Provenance and scope
 
-Prepared for Shikhar Singh with AI assistance. Application logic, tests and synthetic
-demonstrations in this repository were generated with ChatGPT; the maintainer must
-review, run, and understand them before representing them as verified work.
+Project maintainer: Shikhar Singh. Application logic, tests, and synthetic demonstrations require review and local verification.
 No claim is made that the maintainer trained the pretrained landmark models.
 
 MIT covers this project's original application code and synthetic fixtures only.

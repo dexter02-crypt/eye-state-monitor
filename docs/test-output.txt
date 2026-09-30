@@ -1,0 +1,55 @@
+Downloading the version-1 model from Google storage. No camera is opened.
+No independently verified upstream SHA-256 was available in this kit.
+Downloading the version-1 model from Google storage. No camera is opened.
+No independently verified upstream SHA-256 was available in this kit.
+Model saved: /tmp/tmp6grw0p21/models/face_landmarker.task
+SHA-256: 87a8fe21703984549fc2b37b3df732418e9ee99d1df69d84b7cd6a783a1e1ec1
+Using existing verified local bytes: /tmp/tmp6grw0p21/models/face_landmarker.task
+test_cli_synthetic_demo (test_eye_state.EvaluationAndIOTests.test_cli_synthetic_demo) ... ok
+test_exclusive_outputs (test_eye_state.EvaluationAndIOTests.test_exclusive_outputs) ... ok
+test_invalid_labels_refused (test_eye_state.EvaluationAndIOTests.test_invalid_labels_refused) ... ok
+test_metrics_unknowns_not_hidden (test_eye_state.EvaluationAndIOTests.test_metrics_unknowns_not_hidden) ... ok
+test_missing_profile_fails_without_camera (test_eye_state.EvaluationAndIOTests.test_missing_profile_fails_without_camera) ... ok
+test_no_predictions_does_not_invent_precision (test_eye_state.EvaluationAndIOTests.test_no_predictions_does_not_invent_precision) ... ok
+test_symlink_output_rejected (test_eye_state.EvaluationAndIOTests.test_symlink_output_rejected) ... ok
+test_bad_calibration_refused (test_eye_state.GeometryTests.test_bad_calibration_refused) ... ok
+test_calibration_separates_states (test_eye_state.GeometryTests.test_calibration_separates_states) ... ok
+test_degenerate_width_rejected (test_eye_state.GeometryTests.test_degenerate_width_rejected) ... ok
+test_ear_in_plane_rotation (test_eye_state.GeometryTests.test_ear_in_plane_rotation) ... ok
+test_ear_known_value (test_eye_state.GeometryTests.test_ear_known_value) ... ok
+test_ear_scale_translation_invariance (test_eye_state.GeometryTests.test_ear_scale_translation_invariance) ... ok
+test_geometry_adapter_rejects_small_eyes (test_eye_state.GeometryTests.test_geometry_adapter_rejects_small_eyes) ... ok
+test_geometry_adapter_uses_pixel_aspect_ratio (test_eye_state.GeometryTests.test_geometry_adapter_uses_pixel_aspect_ratio) ... ok
+test_hysteresis_boundaries (test_eye_state.GeometryTests.test_hysteresis_boundaries) ... ok
+test_invalid_landmarks_refused (test_eye_state.GeometryTests.test_invalid_landmarks_refused) ... ok
+test_multiple_faces_refused (test_eye_state.GeometryTests.test_multiple_faces_refused) ... ok
+test_no_face_is_unknown_measurement (test_eye_state.GeometryTests.test_no_face_is_unknown_measurement) ... ok
+test_nonfinite_rejected (test_eye_state.GeometryTests.test_nonfinite_rejected) ... ok
+test_out_of_frame_refused (test_eye_state.GeometryTests.test_out_of_frame_refused) ... ok
+test_threshold_order (test_eye_state.GeometryTests.test_threshold_order) ... ok
+test_absence_breaks_continuity (test_eye_state.TemporalTests.test_absence_breaks_continuity) ... ok
+test_asymmetric_eye_not_both_closed (test_eye_state.TemporalTests.test_asymmetric_eye_not_both_closed) ... ok
+test_configuration_rejects_invalid_durations (test_eye_state.TemporalTests.test_configuration_rejects_invalid_durations) ... ok
+test_initial_closed_not_invented_blink (test_eye_state.TemporalTests.test_initial_closed_not_invented_blink) ... ok
+test_invalid_measurement_not_awake (test_eye_state.TemporalTests.test_invalid_measurement_not_awake) ... ok
+test_large_gap_resets_timer (test_eye_state.TemporalTests.test_large_gap_resets_timer) ... ok
+test_normal_blink_counted_once (test_eye_state.TemporalTests.test_normal_blink_counted_once) ... ok
+test_prolonged_event_once_per_episode (test_eye_state.TemporalTests.test_prolonged_event_once_per_episode) ... ok
+test_single_frame_noise_not_blink (test_eye_state.TemporalTests.test_single_frame_noise_not_blink) ... ok
+test_time_reversal_and_equal_rejected (test_eye_state.TemporalTests.test_time_reversal_and_equal_rejected) ... ok
+test_time_weighted_coverage (test_eye_state.TemporalTests.test_time_weighted_coverage) ... ok
+test_window_expires_old_intervals (test_eye_state.TemporalTests.test_window_expires_old_intervals) ... ok
+test_zero_coverage_has_no_closure_fraction (test_eye_state.TemporalTests.test_zero_coverage_has_no_closure_fraction) ... ok
+test_bad_download_never_saves_a_model (test_model_files.ModelFileTests.test_bad_download_never_saves_a_model) ... ok
+test_matching_local_receipt_checks_bytes_only (test_model_files.ModelFileTests.test_matching_local_receipt_checks_bytes_only) ... ok
+test_missing_model_is_explicit_failure (test_model_files.ModelFileTests.test_missing_model_is_explicit_failure) ... ok
+test_mock_download_records_received_bytes_and_reuses (test_model_files.ModelFileTests.test_mock_download_records_received_bytes_and_reuses) ... ok
+test_model_symlink_rejected (test_model_files.ModelFileTests.test_model_symlink_rejected) ... ok
+test_non_object_receipt_rejected (test_model_files.ModelFileTests.test_non_object_receipt_rejected) ... ok
+test_tampered_bytes_are_not_accepted (test_model_files.ModelFileTests.test_tampered_bytes_are_not_accepted) ... ok
+test_wrong_source_receipt_rejected (test_model_files.ModelFileTests.test_wrong_source_receipt_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 43 tests in 1.178s
+
+OK

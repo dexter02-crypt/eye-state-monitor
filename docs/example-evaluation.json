@@ -1,0 +1,16 @@
+{
+  "rows": 10,
+  "closed_truth": 5,
+  "open_truth": 5,
+  "true_positive": 3,
+  "false_positive": 1,
+  "true_negative": 3,
+  "closed_missed_including_abstentions": 2,
+  "abstentions": 2,
+  "coverage": 0.8,
+  "closed_precision": 0.75,
+  "closed_recall_including_abstentions": 0.6,
+  "closed_f1": 0.6666666666666666,
+  "overall_correct_fraction": 0.6,
+  "note": "Per-frame eye-state metrics, not sleep classification or blink-event metrics."
+}

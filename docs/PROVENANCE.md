@@ -1,12 +1,11 @@
 # Provenance and scope
 
-Project maintainer: Shikhar Singh. Application logic, tests, and synthetic demonstrations require review and local verification.
-No claim is made that the maintainer trained the pretrained landmark models.
+Project maintainer: Shikhar Singh.
 
-MIT covers this project's original application code and synthetic fixtures only.
-OpenCV, NumPy and, where used, MediaPipe retain their own licenses. Model weights are
-not bundled or automatically committed. Follow the linked official model guidance
-and terms before redistributing weights. Paper methods are attributed in DESIGN.md;
-no paper text, figures, third-party project source, or real-person images are bundled.
+MIT covers this project's original application code, deterministic eye-state logic, tests, and synthetic examples only.
 
-Passing synthetic/unit tests does not establish real-world detection accuracy.
+MediaPipe, OpenCV, NumPy, their native components, and bundled/runtime model assets retain their own licenses and provenance. This project does not claim that the maintainer trained MediaPipe's landmark model.
+
+The EAR method is attributed in `DESIGN.md`.
+
+Passing synthetic tests or a native backend smoke check does not establish real-world eye-state accuracy, sleep detection, medical fitness, or driving-safety suitability.

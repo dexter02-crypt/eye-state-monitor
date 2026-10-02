@@ -7,14 +7,13 @@ A small, inspectable webcam experiment for **OPEN / CLOSED / ASYMMETRIC / UNKNOW
 ## Start from this repository
 
 ```bash
-bash setup.sh
-.venv/bin/python app.py model
+PYTHON=/opt/homebrew/bin/python3.12 bash setup.sh
 .venv/bin/python app.py check
 .venv/bin/python app.py calibrate
 .venv/bin/python app.py camera
 ```
 
-Run commands separately; stop when any returns an error. `check` loads the real model and processes a blank image; a successful result proves startup, not detection accuracy.
+Run commands separately; stop when any returns an error. `check` initializes the local MediaPipe Face Mesh backend and processes a blank image; success proves native backend startup, not detection accuracy.
 
 During calibration, keep ONE face centred, both eyes clearly visible, and the camera stationary. Use ordinary frontal lighting. Press **O**, keep your eyes naturally open for three seconds. Then press **C**, close naturally for five seconds and reopen. The first two seconds of the closed phase are a transition delay; the next three collect samples. Do not squeeze the eyes shut. Calibration requires at least 20 usable samples in each phase and refuses overlapping open/closed distributions.
 
@@ -25,7 +24,7 @@ The profile is saved to `.local/calibration.json`. Profiles are session/person/c
 .venv/bin/python app.py camera --profile .local/session-2.json
 ```
 
-Press Q or Esc in the video window to stop. `--camera 1` selects another local camera. The program only acquires the camera after `camera` or `calibrate`, never during setup, model download, or unit tests.
+Press Q or Esc in the video window to stop. `--camera 1` selects another local camera. The program only acquires the camera after `camera` or `calibrate`, never during setup, `check`, or ordinary unit-test setup.
 
 ## What is different from a one-threshold demo?
 
@@ -61,6 +60,18 @@ Read [design](docs/DESIGN.md), [privacy and model handling](docs/PRIVACY_AND_MOD
 
 ## Environment and installation scope
 
-The launcher targets macOS/Linux with standard CPython 3.11–3.14. Each project gets its own `.venv`; no system Python packages are replaced. The intended Mac target is Apple Silicon. Your Python 3.14/NumPy combination requires an available compatible wheel; the complete new dependency resolution has NOT been tested on your Mac. Stop on an installation error instead of changing global packages or using sudo.
+The verified release baseline uses standard CPython 3.12.
 
-Direct dependencies are pinned in `requirements.txt`; transitive dependencies are not a complete hash-locked environment. Setup downloads packages from your configured pip index. `pip check` checks installed dependency consistency, not security or camera accuracy. Native macOS, webcam, and remote GitHub Actions results must be recorded separately. See [validation](docs/VALIDATION.md).
+The macOS Apple-Silicon compatibility stack is:
+
+- MediaPipe 0.10.21
+- OpenCV contrib 4.11.0
+- NumPy 1.26.4
+
+MediaPipe Tasks FaceLandmarker 1.0.1 was rejected for this release because native initialization repeatedly aborted on the maintainer Mac. The release instead uses the legacy Face Mesh backend, which completed creation, blank-image inference, video-mode startup, and the project test suite on the same machine.
+
+Each project uses its own `.venv`; system Python packages are not replaced. Do not use `sudo` for installation.
+
+`pip check` is not used as the macOS release gate because MediaPipe 0.10.21 reports an unsupported-platform metadata warning on this system despite successful native runtime execution. The release gate instead uses exact dependency pins, imports, the project test suite, and real Face Mesh initialization.
+
+Native camera behavior and real-world eye-state accuracy remain separate manual checks.

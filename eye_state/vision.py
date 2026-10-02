@@ -1,29 +1,63 @@
 """MediaPipe adapter. Quality gates are heuristics, not calibrated confidence scores."""
 from __future__ import annotations
 import math
-from local_support import model_path, validate_frame
+from types import SimpleNamespace
+from local_support import validate_frame
 from .core import eye_aspect_ratio
 LEFT = (362, 385, 387, 263, 373, 380)
 RIGHT = (33, 160, 158, 133, 153, 144)
 
 
+class FaceMeshDetector:
+    """Context-managed adapter around MediaPipe legacy Face Mesh."""
+
+    def __init__(self, video=False):
+        import mediapipe as mp
+
+        self._mesh = mp.solutions.face_mesh.FaceMesh(
+            static_image_mode=not video,
+            max_num_faces=2,
+            refine_landmarks=False,
+            min_detection_confidence=.7,
+            min_tracking_confidence=.7,
+        )
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+        return False
+
+    def close(self):
+        self._mesh.close()
+
+    def process(self, rgb):
+        result = self._mesh.process(rgb)
+
+        faces = [
+            list(face.landmark)
+            for face in (result.multi_face_landmarks or [])
+        ]
+
+        return SimpleNamespace(face_landmarks=faces)
+
+
 def create_detector(video=False):
-    import mediapipe as mp
-    from mediapipe.tasks.python import vision
-    options = vision.FaceLandmarkerOptions(
-        base_options=mp.tasks.BaseOptions(model_asset_path=str(model_path('face'))),
-        running_mode=vision.RunningMode.VIDEO if video else vision.RunningMode.IMAGE,
-        num_faces=2, min_face_detection_confidence=.7,
-        min_face_presence_confidence=.7, min_tracking_confidence=.7)
-    return vision.FaceLandmarker.create_from_options(options)
+    return FaceMeshDetector(video=video)
 
 
 def infer(detector, frame, timestamp_ms=None):
     import cv2
-    import mediapipe as mp
-    image = mp.Image(image_format=mp.ImageFormat.SRGB,
-                     data=cv2.cvtColor(validate_frame(frame), cv2.COLOR_BGR2RGB))
-    return detector.detect(image) if timestamp_ms is None else detector.detect_for_video(image, timestamp_ms)
+
+    _ = timestamp_ms
+
+    image = cv2.cvtColor(
+        validate_frame(frame),
+        cv2.COLOR_BGR2RGB,
+    )
+
+    return detector.process(image)
 
 
 def measure(faces, width, height):

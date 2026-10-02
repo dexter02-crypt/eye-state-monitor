@@ -1,23 +1,15 @@
-"""Local I/O and explicit model acquisition. No Git or automatic camera access."""
+"""Local I/O helpers. No Git or automatic camera access."""
 from __future__ import annotations
 from contextlib import contextmanager
-from datetime import datetime, timezone
-import hashlib
+from datetime import datetime
 import json
 import math
 import os
 from pathlib import Path
 import sys
-import urllib.request
 import uuid
-import zipfile
 
 ROOT = Path(__file__).resolve().parent
-MODELS = {
-    'face': ('face_landmarker.task', 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'),
-    'hand': ('hand_landmarker.task', 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'),
-}
-
 
 def finite(value: float, name: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
@@ -52,62 +44,6 @@ def read_json(path: Path, limit: int = 1_000_000) -> object:
         raise ValueError('Missing or oversized JSON file.')
     return json.loads(path.read_text(encoding='utf-8'),
                       parse_constant=lambda v: (_ for _ in ()).throw(ValueError('Non-finite JSON value')))
-
-
-def download_model(kind: str) -> Path:
-    """Explicit HTTPS download; receipts are local TOFU hashes, NOT signed provenance."""
-    filename, url = MODELS[kind]
-    path = ROOT / 'models' / filename
-    receipt = path.with_suffix('.receipt.json')
-    if path.exists() or path.is_symlink() or receipt.exists() or receipt.is_symlink():
-        print(f'Using existing verified local bytes: {model_path(kind)}')
-        return path
-    if (ROOT / 'models').is_symlink():
-        raise ValueError('Refusing a symlinked model folder.')
-    print('Downloading the version-1 model from Google storage. No camera is opened.')
-    print('No independently verified upstream SHA-256 was available in this kit.')
-    class SameHostRedirect(urllib.request.HTTPRedirectHandler):
-        def redirect_request(self, req, fp, code, msg, headers, newurl):
-            from urllib.parse import urlparse
-            parsed = urlparse(newurl)
-            if parsed.scheme != 'https' or parsed.netloc != 'storage.googleapis.com':
-                raise ValueError('Unexpected model-download redirect.')
-            return super().redirect_request(req, fp, code, msg, headers, newurl)
-    opener = urllib.request.build_opener(SameHostRedirect())
-    data = bytearray()
-    with opener.open(url, timeout=60) as response:
-        while block := response.read(1 << 20):
-            data.extend(block)
-            if len(data) > 40_000_000:
-                raise ValueError('Model download exceeds the 40 MB limit.')
-    import io
-    try:
-        with zipfile.ZipFile(io.BytesIO(data)) as archive:
-            if not any(name.endswith('.tflite') for name in archive.namelist()):
-                raise ValueError('The download is not the expected task model bundle.')
-    except zipfile.BadZipFile as exc:
-        raise ValueError('Invalid model bundle received; no model file was saved.') from exc
-    digest = hashlib.sha256(data).hexdigest()
-    write_new(path, bytes(data))
-    write_json(receipt, {'url': url, 'bytes': len(data), 'sha256': digest,
-                       'downloaded_utc': datetime.now(timezone.utc).isoformat(),
-                       'verification': 'Local trust-on-first-use hash, not an upstream signature'})
-    print(f'Model saved: {path}\nSHA-256: {digest}')
-    return path
-
-
-def model_path(kind: str) -> Path:
-    filename, url = MODELS[kind]
-    path = ROOT / 'models' / filename
-    receipt_path = path.with_suffix('.receipt.json')
-    if path.is_symlink() or receipt_path.is_symlink() or path.parent.is_symlink():
-        raise ValueError('Model path must not be a symlink.')
-    if not path.is_file() or path.stat().st_size > 40_000_000:
-        raise ValueError('Download the model first: python app.py model')
-    receipt = read_json(receipt_path)
-    if not isinstance(receipt, dict) or receipt.get('url') != url or receipt.get('bytes') != path.stat().st_size or receipt.get('sha256') != hashlib.sha256(path.read_bytes()).hexdigest():
-        raise ValueError('Model differs from its local download receipt; no automatic replacement.')
-    return path
 
 
 @contextmanager

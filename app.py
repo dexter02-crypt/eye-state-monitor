@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 import sys
 import time
-from local_support import ROOT, capture, download_model, overlay, read_json, unique_output, write_json, write_new
+from local_support import ROOT, capture, overlay, read_json, unique_output, write_json, write_new
 from eye_state.core import EyeTracker, Thresholds, calibrate_eye, evaluate
 
 
@@ -136,8 +136,7 @@ def run_camera(args, calibrating=False):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest='command',required=True)
-    sub.add_parser('model',help='Explicit download of version-1 model; no camera access')
-    sub.add_parser('check',help='Real model load and blank-image inference, not an accuracy test')
+    sub.add_parser('check',help='Initialize Face Mesh and run blank-image inference; not an accuracy test')
     p=sub.add_parser('demo');p.add_argument('--output')
     p=sub.add_parser('evaluate');p.add_argument('csv');p.add_argument('--output')
     for name in ('calibrate','camera','video'):
@@ -151,14 +150,13 @@ def main(argv=None):
             p.add_argument('video');p.add_argument('--no-display',action='store_true')
     args=parser.parse_args(argv)
     try:
-        if args.command=='model':download_model('face')
-        elif args.command=='check':
+        if args.command=='check':
             import numpy as np
             from eye_state.vision import create_detector,infer
             with create_detector() as detector:
                 result=infer(detector,np.zeros((480,640,3),dtype=np.uint8))
             if result.face_landmarks:raise ValueError('Unexpected face on blank smoke-test image.')
-            print('Real FaceLandmarker initialized; blank-image inference returned zero faces. Camera accuracy is unmeasured.')
+            print('MediaPipe Face Mesh initialized; blank-image inference returned zero faces. Camera accuracy is unmeasured.')
         elif args.command=='demo':demo(args.output)
         elif args.command=='evaluate':
             path=Path(args.csv)

@@ -1,20 +1,42 @@
-name: Tests (not a webcam accuracy benchmark)
-on: [push, pull_request, workflow_dispatch]
+name: Tests and native MediaPipe smoke
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
 permissions:
   contents: read
+
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11', '3.14']
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.12"]
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: |
+
+      - name: Install pinned dependencies
+        run: |
           python -m pip install --only-binary=:all: -r requirements.txt
-      - run: python -m pip check
-      - run: python -m unittest discover -s tests -v
+
+      - name: Run tests
+        run: |
+          python -B -m unittest discover -s tests -v
+
+      - name: Native Face Mesh blank-image smoke check
+        run: |
+          python app.py check

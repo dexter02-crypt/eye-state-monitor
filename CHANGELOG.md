@@ -2,7 +2,7 @@
 
 ## 0.1.0 — 2026-10-02
 
-Initial public release candidate for Eye State Monitor.
+Initial public release of Eye State Monitor.
 
 - Tracks calibrated OPEN / CLOSED / ASYMMETRIC / UNKNOWN eye state.
 - Counts bounded blink and prolonged-closure events.

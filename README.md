@@ -7,7 +7,7 @@ A small, inspectable webcam experiment for **OPEN / CLOSED / ASYMMETRIC / UNKNOW
 ## Start from this repository
 
 ```bash
-PYTHON=/opt/homebrew/bin/python3.12 bash setup.sh
+PYTHON=python3.12 bash setup.sh
 .venv/bin/python app.py check
 .venv/bin/python app.py calibrate
 .venv/bin/python app.py camera
